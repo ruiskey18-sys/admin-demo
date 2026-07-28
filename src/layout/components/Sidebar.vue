@@ -14,10 +14,12 @@ import { menuList } from '../../menu';
             </div>
             
             <!-- 二级菜单 -->
-            <div v-for="value in menu.children" class="menu-item">
+            <router-link v-for="value in menu.children" class="menu-item" :key="value.id" :to="value.path">
                 {{  value.title }}
-            </div>
+            </router-link>
         </div>
         
     </aside>
+
 </template>
+

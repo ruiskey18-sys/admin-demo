@@ -84,8 +84,13 @@ li.active {
 }
 
 .menu-item {
-  padding: 10px;
-  margin-left: 18px;
+display:block;
+
+text-decoration:none;
+
+padding:10px;
+
+color:#ccc;
 }
 
 .menu-title {
