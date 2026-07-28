@@ -7,7 +7,8 @@ export const menuList = [
       {
         id: 11,
         title: '用户管理',
-        path: '/user'
+        path: '/user',
+        component:'User'
       },
       {
         id: 12,
@@ -24,7 +25,8 @@ export const menuList = [
       {
         id: 21,
         title: '项目管理',
-        path: '/project'
+        path: '/project',
+        component:'Project'
       },
       {
         id: 22,

@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import {generateRoutes} from './routes'
 
 const routes = [
     {
@@ -8,20 +9,9 @@ const routes = [
         children: [
             {
                 path: '',
-                redirect: '/home'
+                redirect: '/user'
             },
-            {
-                path: 'home',
-                component:()=>import('../views/Home.vue'),
-            },
-            {
-                path: 'user',
-                component:()=>import('../views/User.vue'),
-            },
-            {
-                path: 'project',
-                component:()=>import('../views/Project.vue'),
-            }
+            ...generateRoutes()
         ]
     }
 ]
