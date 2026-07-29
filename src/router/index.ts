@@ -4,14 +4,10 @@ import {generateRoutes} from './routes'
 const routes = [
     {
         path: '/',
+        name: 'Layout',
         component:()=>import('../layout/Layout.vue'),
 
         children: [
-            {
-                path: '',
-                redirect: '/user'
-            },
-            ...generateRoutes()
         ]
     }
 ]

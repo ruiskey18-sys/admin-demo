@@ -7,29 +7,42 @@ import { menuList } from "../menu"
 // 让 Vite 帮你扫描一个目录，然后自动生成 import 关系。
 const modules = import.meta.glob('../views/*.vue')
 
-export function generateRoutes(){
+export function generateRoutes(menuList:any[]){
 
     // 这是typescript的写法 :后面定义这个变量里面的类型，这里的any是任意类型的意思
-    const routes:any[]=[]
+    // const routes:any[]=[]
 
-    menuList.forEach(menu=>{
+    // menuList.forEach(menu=>{
 
-        menu.children.forEach(item=>{
+    //     menu.children.forEach(item=>{
 
-            routes.push({
+    //         routes.push({
 
-                path:item.path,
+    //             path:item.path,
 
-                component:
-                    modules[
-                      `../views/${item.component}.vue`
-                    ]
-            })
+    //             component:
+    //                 modules[
+    //                   `../views/${item.component}.vue`
+    //                 ]
+    //         })
 
-        })
+    //     })
+
+    // })
+
+    // return routes
+
+    return menuList.map(item=>{
+
+        return {
+
+            path:item.path,
+
+            component:
+              modules[`../views/${item.component}.vue`]
+
+        }
 
     })
-
-    return routes
 
 }
