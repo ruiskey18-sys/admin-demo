@@ -1,5 +1,10 @@
+import { useMenuStore } from '../store/menu'
+import { useUserStore } from '../store/user'
 import router from './index'
 import {generateRoutes} from './routes'
+import menuList from '../mock/menu'
+
+let hasAddRoutes = false
 
 export function addDynamicRoutes(menuList:any[]){
     const routes = generateRoutes(menuList)
@@ -15,3 +20,34 @@ export function addDynamicRoutes(menuList:any[]){
         router.addRoute('Layout', route)
     })
 }
+
+// 增加路由守卫
+router.beforeEach((to, from, next)=>{
+    console.log('进入路由守卫',to.path)
+    const userStore = useUserStore()
+    // 有token
+    if(userStore.token){
+        // 动态路由只添加一次
+        if(!hasAddRoutes){
+            const menuStore = useMenuStore()
+            menuStore.setMenu(menuList)
+            console.log('守卫获取菜单:', menuStore.menuList)
+            addDynamicRoutes(menuStore.menuList)
+            hasAddRoutes = true
+            next({
+                // ...to,
+                path: '/user',
+                replace:true
+            })
+            return
+        }
+        next()
+    } else {
+        // 没登录
+        if(to.path === '/login'){
+            next()
+        }else{
+            next('/login')
+        }
+    }
+})

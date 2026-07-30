@@ -10,12 +10,12 @@ const menuStore = useMenuStore()
 function login() {
     // 模拟登录
     userStore.login('admin')
-    // 模拟后端返回菜单
-    menuStore.setMenu(menuList)
-    // 动态注册路由
-    addDynamicRoutes(
-        menuStore.menuList
-    )
+    // // 模拟后端返回菜单
+    // menuStore.setMenu(menuList)
+    // // 动态注册路由
+    // addDynamicRoutes(
+    //     menuStore.menuList
+    // )
     // 进入后台
     router.push('/')
 }
