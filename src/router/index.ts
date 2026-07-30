@@ -3,6 +3,10 @@ import {generateRoutes} from './routes'
 
 const routes = [
     {
+        path:'/login',
+        component:()=>import('../views/Login.vue')
+    },
+    {
         path: '/',
         name: 'Layout',
         component:()=>import('../layout/Layout.vue'),

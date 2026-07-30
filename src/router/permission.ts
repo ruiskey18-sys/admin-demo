@@ -3,6 +3,8 @@ import {generateRoutes} from './routes'
 
 export function addDynamicRoutes(menuList:any[]){
     const routes = generateRoutes(menuList)
+    console.log('动态生成路由:', routes)
+
     routes.forEach(route=>{
         // 所以所有业务页面：
         // User.vue

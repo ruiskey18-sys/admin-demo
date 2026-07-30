@@ -5,20 +5,20 @@ import { addDynamicRoutes } from './router/permission';
 import router from './router'
 import { nextTick } from 'vue'
 
-const menuStore = useMenuStore()
-menuStore.setMenu(menuList)
-console.log('菜单:',menuStore.menuList)
-// 增加动态路由
-addDynamicRoutes(menuStore.menuList)
-console.log(
-    '当前路由:',
-    router.getRoutes()
-)
-nextTick(()=>{
+// const menuStore = useMenuStore()
+// menuStore.setMenu(menuList)
+// console.log('菜单:',menuStore.menuList)
+// // 增加动态路由
+// addDynamicRoutes(menuStore.menuList)
+// console.log(
+//     '当前路由:',
+//     router.getRoutes()
+// )
+// nextTick(()=>{
 
-    router.push('/user')
+//     router.push('/user')
 
-})
+// })
 </script>
 
 <template>
