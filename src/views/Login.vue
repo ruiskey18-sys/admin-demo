@@ -4,19 +4,34 @@ import { addDynamicRoutes } from '../router/permission';
 import { useMenuStore } from '../store/menu';
 import { useUserStore } from '../store/user';
 import router from '../router/index'
+import {ref} from 'vue'
+import request from '../utils/request'
 
 const userStore = useUserStore()
 const menuStore = useMenuStore()
-function login() {
-    // 模拟登录
-    userStore.login('admin')
-    // // 模拟后端返回菜单
-    // menuStore.setMenu(menuList)
-    // // 动态注册路由
-    // addDynamicRoutes(
-    //     menuStore.menuList
-    // )
-    // 进入后台
+
+const username = ref('admin')
+const password = ref('123456')
+
+
+const login = async()=>{
+    const res:any = await request.post(
+        '/login',
+        {
+            username:username.value,
+            password:password.value
+        }
+    )
+    console.log('登录接口返回:', res)
+
+    userStore.setToken(
+        res.data.token
+    )
+
+    userStore.setUser(
+        res.data.username
+    )
+
     router.push('/')
 }
 </script>

@@ -9,6 +9,13 @@ export const useUserStore = defineStore(
             }
         },
         actions:{
+            setToken(token:string){
+                this.token=token
+            },
+
+            setUser(username:string){
+                this.username=username
+            },
             login(username:string){
                 this.username = username
                 this.token = 'token-demo'
