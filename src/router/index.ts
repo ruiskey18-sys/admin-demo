@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import {generateRoutes} from './routes'
 
 const routes = [
     {

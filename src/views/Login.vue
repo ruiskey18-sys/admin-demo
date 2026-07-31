@@ -1,14 +1,10 @@
 <script setup lang="ts">
-import  menuList  from '../mock/menu';
-import { addDynamicRoutes } from '../router/permission';
-import { useMenuStore } from '../store/menu';
 import { useUserStore } from '../store/user';
 import router from '../router/index'
 import {ref} from 'vue'
 import request from '../utils/request'
 
 const userStore = useUserStore()
-const menuStore = useMenuStore()
 
 const username = ref('admin')
 const password = ref('123456')
