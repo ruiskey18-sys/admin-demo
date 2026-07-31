@@ -2,7 +2,7 @@ import { useMenuStore } from '../store/menu'
 import { useUserStore } from '../store/user'
 import router from './index'
 import {generateRoutes} from './routes'
-import menuList from '../mock/menu'
+import {getMenu} from '../api/menu'
 
 let hasAddRoutes = false
 
@@ -22,21 +22,24 @@ export function addDynamicRoutes(menuList:any[]){
 }
 
 // 增加路由守卫
-router.beforeEach((to, from, next)=>{
+router.beforeEach(async(to, from, next)=>{
     console.log('进入路由守卫',to.path)
     const userStore = useUserStore()
+    const menuStore = useMenuStore()
     // 有token
     if(userStore.token){
         // 动态路由只添加一次
         if(!hasAddRoutes){
-            const menuStore = useMenuStore()
-            menuStore.setMenu(menuList)
-            console.log('守卫获取菜单:', menuStore.menuList)
-            addDynamicRoutes(menuStore.menuList)
+            console.log('开始请求菜单')
+            const res:any = await getMenu()
+            console.log('菜单接口返回：',res)
+            menuStore.setMenu(res.data)
+            
+            addDynamicRoutes(res.data)
             hasAddRoutes = true
             next({
-                // ...to,
-                path: '/user',
+                ...to,
+                // path: '/user',
                 replace:true
             })
             return
