@@ -12,6 +12,10 @@ const routes = [
 
         children: [
         ]
+    },
+    {
+        path:'/logout',
+        component:()=>import('../views/Logout.vue')
     }
 ]
 
