@@ -27,7 +27,8 @@ async function loadUserList(){
 
     const res:any = await getUserList()
 
-    userList.value=res.data.data
+    userList.value=res.data
+    console.log(res)
 
 }
 
@@ -39,7 +40,15 @@ onMounted(()=>{
 <template>
     <h1>用户管理页面</h1>
     <div>
-        <table>
+        <el-table :data="userList" border stripe>
+            <el-table-column prop="id" label="ID"/>
+            <el-table-column prop="username" label="用户名"/>
+            <el-table-column prop="name" label="姓名"/>
+            <el-table-column prop="role" label="角色"/>
+            <el-table-column prop="status" label="状态"/>
+            <el-table-column prop="createdAt" label="创建时间"/>
+        </el-table>
+        <!-- <table>
             <thead>
                 <tr>
                     <th>ID</th>
@@ -63,7 +72,7 @@ onMounted(()=>{
                     <td>{{user.createdAt}}</td>
                 </tr>
             </tbody>
-        </table>
+        </table> -->
     </div>
 </template>
 
