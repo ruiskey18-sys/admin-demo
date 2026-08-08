@@ -19,17 +19,25 @@ interface User{
 
 }
 
+const dialogVisible = ref(false)
+
 const userList = ref<User[]>([])
 
 
 
 async function loadUserList(){
-
     const res:any = await getUserList()
-
     userList.value=res.data
-    console.log(res)
+}
 
+async function submit(){
+    // await createUser(form.value)
+    dialogVisible.value=false
+    loadUserList()
+}
+
+function openDialog(){
+    dialogVisible.value=true
 }
 
 onMounted(()=>{
@@ -40,6 +48,7 @@ onMounted(()=>{
 <template>
     <h1>用户管理页面</h1>
     <div>
+        <el-button type="primary" @click="openDialog">新增用户</el-button>
         <el-table :data="userList" border stripe>
             <el-table-column prop="id" label="ID"/>
             <el-table-column prop="username" label="用户名"/>
@@ -74,6 +83,27 @@ onMounted(()=>{
             </tbody>
         </table> -->
     </div>
+
+    <el-dialog v-model="dialogVisible">
+        <el-form>
+            <el-form-item label="用户名">
+                <el-input />
+            </el-form-item>
+            <el-form-item label="姓名">
+                <el-input />
+            </el-form-item>
+            <el-form-item label="角色">
+                <el-input />
+            </el-form-item>
+            <el-form-item label="状态">
+                <el-input />
+            </el-form-item>
+        </el-form>
+        <template #footer>
+            <el-button @click="dialogVisible=false">取消</el-button>
+            <el-button type="primary" @click="submit">确定</el-button>
+        </template>
+    </el-dialog>
 </template>
 
 <style scoped>
