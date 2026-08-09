@@ -10,7 +10,7 @@ const menuStore = useMenuStore()
         <div class="logo">Ruiskey's Home</div>
             <!-- 一级菜单 -->
             <router-link class="menu-item" v-for="menu in menuStore.menuList" :key="menu.path" :to="menu.path">
-                <span>{{ menu.icon }}</span>
+                <!-- <span>{{ menu.icon }}</span> -->
                 {{  menu.title }}
             </router-link>      
     </aside>

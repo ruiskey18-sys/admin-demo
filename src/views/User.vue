@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import {getUserList} from '../api/user'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import {getUserList, deleteUserApi} from '../api/user'
 import {ref, onMounted} from 'vue'
 
 
@@ -30,6 +31,7 @@ async function loadUserList(){
     userList.value=res.data
 }
 
+
 async function submit(){
     // await createUser(form.value)
     dialogVisible.value=false
@@ -38,6 +40,20 @@ async function submit(){
 
 function openDialog(){
     dialogVisible.value=true
+}
+
+const deleteUser = async(row:any)=>{
+
+    try {
+        await ElMessageBox.confirm(`确定删除${row.username}?`, '提示')
+        await deleteUserApi(row.objectId)
+        ElMessage.success('删除成功')
+        // 删除成功重新加载列表
+        loadUserList()
+    } catch (e){
+        
+    }
+    
 }
 
 onMounted(()=>{
@@ -50,38 +66,19 @@ onMounted(()=>{
     <div>
         <el-button type="primary" @click="openDialog">新增用户</el-button>
         <el-table :data="userList" border stripe>
-            <el-table-column prop="id" label="ID"/>
+            <!-- <el-table-column prop="id" label="ID"/> -->
             <el-table-column prop="username" label="用户名"/>
-            <el-table-column prop="name" label="姓名"/>
+            <el-table-column prop="nickname" label="姓名"/>
             <el-table-column prop="role" label="角色"/>
             <el-table-column prop="status" label="状态"/>
-            <el-table-column prop="createdAt" label="创建时间"/>
+            <el-table-column prop="createdTime" label="创建时间"/>
+            <el-table-column label="操作">
+                <template #default="scope">
+                    <el-button type="primary">编辑</el-button>
+                    <el-button type="danger" @click="deleteUser(scope.row)">删除</el-button>
+                </template>
+            </el-table-column>
         </el-table>
-        <!-- <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>用户名</th>
-                    <th>姓名</th>
-                    <th>角色</th>
-                    <th>状态</th>
-                    <th>创建时间</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr
-                v-for="user in userList"
-                :key="user.id"
-                >
-                    <td>{{user.id}}</td>
-                    <td>{{user.username}}</td>
-                    <td>{{user.name}}</td>
-                    <td>{{user.role}}</td>
-                    <td>{{user.status}}</td>
-                    <td>{{user.createdAt}}</td>
-                </tr>
-            </tbody>
-        </table> -->
     </div>
 
     <el-dialog v-model="dialogVisible">
