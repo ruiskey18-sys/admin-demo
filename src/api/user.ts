@@ -11,3 +11,15 @@ export function deleteUserApi(objectId:string){
         }
     })
 }
+
+export function createUserApi(data:any){
+    return request.post('/user/add', data)
+}
+
+export function getUserDetailApi(objectId:string){
+    return request.get('/user/detail', {
+        params: {
+            objectId:objectId
+        }
+    })
+}
