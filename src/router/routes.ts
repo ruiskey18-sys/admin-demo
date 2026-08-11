@@ -5,7 +5,7 @@ import { menuList } from "../menu"
 // import Project from '../views/Project.vue'
 // import Home from '../views/Home.vue'
 // 让 Vite 帮你扫描一个目录，然后自动生成 import 关系。
-const modules = import.meta.glob('../views/*.vue')
+const modules = import.meta.glob('../views/**/*.vue')
 
 export function generateRoutes(menuList:any[]){
 
@@ -33,16 +33,21 @@ export function generateRoutes(menuList:any[]){
     // return routes
 
     return menuList.map(item=>{
-
-        return {
-
-            path:item.path,
-
-            component:
-              modules[`../views/${item.component}.vue`]
-
+        const componentPath =
+            Object.keys(modules)
+            .find(path=>path.endsWith(
+                `/${item.component}.vue`
+            ))
+        if(!componentPath){
+            throw new Error(
+                `组件不存在:${item.component}`
+            )
         }
 
+        return {
+            path:item.path,
+            component: modules[componentPath]
+              //modules[`../views/**/${item.component}.vue`]
+        }
     })
-
 }

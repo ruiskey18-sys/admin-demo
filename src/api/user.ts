@@ -16,6 +16,10 @@ export function createUserApi(data:any){
     return request.post('/user/add', data)
 }
 
+export function updateUserApi(data:any){
+    return request.post('/user/update', data)
+}
+
 export function getUserDetailApi(objectId:string){
     return request.get('/user/detail', {
         params: {
