@@ -14,6 +14,10 @@ interface User{
     createdAt:string
 }
 
+const currentPage = ref(1)
+const pageSize = ref(10)
+const total = ref(0)
+
 const dialogRef = ref()
 
 const userList = ref<User[]>([])
@@ -53,6 +57,18 @@ onMounted(()=>{
 
 <template>
     <h1>用户管理页面</h1>
+    <!-- 搜索区域 -->
+     <div class="search-box">
+        <el-form inline>
+            <el-form-item label="用户名">
+                <el-input></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary">查询</el-button>
+                <el-button>重制</el-button>   
+            </el-form-item>
+        </el-form>
+     </div>
     <div>
         <el-button type="primary" @click="addUser()">新增用户</el-button>
         <el-table :data="userList" border stripe>
@@ -69,6 +85,18 @@ onMounted(()=>{
                 </template>
             </el-table-column>
         </el-table>
+    </div>
+    <div class="pagination-box">
+    <el-pagination
+        v-model:current-page="userList"
+        v-model:page-size="pageSize"
+        :page-sizes="[10, 20, 50, 100]"
+        :total="total"
+        layout="total, sizes, prev, pager, next, jumper"
+        background
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+    />
     </div>
     <!-- success监听子组件发送的事件 -->
     <user-dialog ref="dialogRef" @success="loadUserList"/>
