@@ -13,13 +13,12 @@ body {
 }
 
 .aside {
-  display: flex;
-  flex-direction: column;
   width: 240px;
-  background-color: rgb(33, 32, 32);
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
   color: white;
-  padding: 10px;
-  height:100vh;
+  background-color: #001529;
 }
 
 .logo {
@@ -36,30 +35,13 @@ body {
   flex-direction: column;
 }
 
-li {
-  height:52px;
-  padding-left:20px;
-  display:flex;
-  align-items:center;
-  font-size:16px;
-}
+
 
 ul {
   list-style:none;
 }
 
-li::before {
-  content:"";
-  width:8px;
-  height:8px;
-  background:white;
-  border-radius:50%;
-  margin-right:12px;
-}
 
-li.active {
-    background:#1890ff;
-}
 
 .header {
   height:60px;
@@ -83,17 +65,42 @@ li.active {
   height:100px;
 }
 
-.menu-item {
-display:block;
-
-text-decoration:none;
-
-padding:10px;
-
-color:#ccc;
+.sidebar-menu {
+  width: 100%;
+  border-right: none;
 }
 
-.menu-title {
-  margin-bottom: 10px;
-  padding: 10px;
+.sidebar-menu .el-sub-menu_title {
+  height: 50px;
+  line-height: 50px;
+}
+
+/* 二级菜单背景 */
+.sidebar-menu .el-menu {
+  background-color: #000c17;
+}
+
+/* 二级菜单项字体颜色 */
+.sidebar-menu .el-sub-menu .el-menu-item {
+  color: #bfcbd9;
+}
+
+/* 二级菜单 */
+.sidebar-menu .el-menu-item {
+  min-width: 0;
+  height: 50px;
+  line-height: 50px;
+  padding-left: 50px !important;
+}
+
+/* 鼠标经过 */
+.sidebar-menu .el-menu-item:hover,
+.sidebar-menu .el-sub-menu__title:hover {
+  background-color: #263445;
+}
+
+/* 当前选中菜单 */
+.sidebar-menu .el-menu-item.is-active {
+  background-color: #1890ff;
+  color: white;
 }

@@ -4,6 +4,10 @@ export function getUserList(){
     return request.get('/user/list')
 }
 
+export function getUserPageList(data:any){
+    return request.post('/user/pageList', data)
+}
+
 export function deleteUserApi(objectId:string){
     return request.get('/user/delete', {
         params: {

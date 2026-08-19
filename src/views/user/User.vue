@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ElMessage, ElMessageBox } from 'element-plus'
-import {getUserList, deleteUserApi, createUserApi, getUserDetailApi} from '../../api/user'
+import {getUserPageList, deleteUserApi, getUserDetailApi} from '../../api/user'
 import {ref, onMounted} from 'vue'
 import UserDialog from './components/UserDialog.vue'
 
@@ -24,8 +24,28 @@ const userList = ref<User[]>([])
 
 
 async function loadUserList(){
-    const res:any = await getUserList()
-    userList.value=res.data
+    const res:any = await getUserPageList({
+        pageNum: currentPage.value,
+        pageSize: pageSize.value,
+        username: searchForm.value.username
+    })
+    userList.value=res.data.records
+    console.log(res.data)
+    total.value = res.data.total
+}
+
+// 切换页码
+const handleCurrentChange = (page: number) => {
+    currentPage.value = page
+    console.log('翻页')
+    loadUserList()
+}
+
+// 修改每页条数
+const handleSizeChange = (size: number) => {
+    pageSize.value = size
+    currentPage.value = 1
+    loadUserList()
 }
 
 
@@ -50,6 +70,16 @@ const addUser = ()=>{
     dialogRef.value.open('add')
 }
 
+const searchForm = ref({
+    username: ''
+})
+
+const handleSearch = ()=>{
+    currentPage.value = 1
+    loadUserList()
+    searchForm.value.username = ''
+}
+
 onMounted(()=>{
     loadUserList()
 })
@@ -59,13 +89,13 @@ onMounted(()=>{
     <h1>用户管理页面</h1>
     <!-- 搜索区域 -->
      <div class="search-box">
-        <el-form inline>
+        <el-form :model="searchForm" inline>
             <el-form-item label="用户名">
-                <el-input></el-input>
+                <el-input v-model="searchForm.username" clearable></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary">查询</el-button>
-                <el-button>重制</el-button>   
+                <el-button type="primary" @click="handleSearch">查询</el-button>
+                <el-button>重置</el-button>   
             </el-form-item>
         </el-form>
      </div>
@@ -88,7 +118,7 @@ onMounted(()=>{
     </div>
     <div class="pagination-box">
     <el-pagination
-        v-model:current-page="userList"
+        v-model:current-page="currentPage"
         v-model:page-size="pageSize"
         :page-sizes="[10, 20, 50, 100]"
         :total="total"
@@ -103,4 +133,14 @@ onMounted(()=>{
 </template>
 
 <style scoped>
+.pagination-box {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+:deep(.el-pager li::before) {
+    display: none;
+    content: none;
+}
 </style>
