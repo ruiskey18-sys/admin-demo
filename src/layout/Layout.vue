@@ -9,7 +9,7 @@ import Sidebar from './components/Sidebar.vue';
         <Sidebar />
         <div class="right">
             <Header />
-            <main>
+            <main class="main">
                 <router-view />
             </main>
         </div>
