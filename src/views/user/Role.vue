@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox, ElTree, type FormInstance, type FormRules } from 'element-plus'
-import { getRolePageList } from '../../api/role'
+import { createRoleApi, deleteRoleApi, getRolePageList, updateRoleApi } from '../../api/role'
 
 interface Role {
     id: string
@@ -52,7 +52,9 @@ const loadRoleList = async () => {
     try {
         const res: any = await getRolePageList({
             pageNum: currentPage.value,
-            pageSize: pageSize.value
+            pageSize: pageSize.value,
+            roleName: query.name.trim(),
+            roleCode: query.name.trim()
         })
         roles.value = res.data?.records ?? []
         total.value = Number(res.data?.total ?? 0)
@@ -66,14 +68,6 @@ const loadRoleList = async () => {
 }
 
 const handleSearch = () => {
-    // 当前分页接口只接收 pageNum 和 pageSize；暂时在当前页中筛选。
-    const keyword = query.name.trim().toLowerCase()
-    if (keyword) {
-        roles.value = roles.value.filter(role =>
-            role.name.toLowerCase().includes(keyword) || role.key.toLowerCase().includes(keyword)
-        )
-        return
-    }
     currentPage.value = 1
     loadRoleList()
 }
@@ -97,6 +91,7 @@ const handleSizeChange = (size: number) => {
 
 const dialogVisible = ref(false)
 const dialogMode = ref<'add' | 'edit'>('add')
+const submitting = ref(false)
 const roleFormRef = ref<FormInstance>()
 const roleForm = reactive({ id: '', name: '', key: '', status: true })
 const roleRules: FormRules = {
@@ -126,31 +121,80 @@ const submitRole = async () => {
     if (!valid) return
 
     if (dialogMode.value === 'add') {
-        roles.value.unshift({
-            id: `local-${Date.now()}`,
-            name: roleForm.name,
-            key: roleForm.key,
-            status: roleForm.status,
-            permiss: [],
-            createdTime: new Date().toISOString(),
-            updatedTime: new Date().toISOString()
-        })
-        ElMessage.success('新增角色成功')
+        submitting.value = true
+        try {
+            const res: any = await createRoleApi({
+                roleCode: roleForm.key,
+                roleName: roleForm.name,
+                status: roleForm.status ? 1 : 0
+            })
+            if (res.code !== 200) {
+                throw new Error(res.message || '新增角色失败')
+            }
+
+            dialogVisible.value = false
+            currentPage.value = 1
+            await loadRoleList()
+            ElMessage.success(res.message || '新增角色成功')
+        } catch (error: any) {
+            const message = error?.response?.data?.message || error?.message || '新增角色失败'
+            ElMessage.error(message)
+        } finally {
+            submitting.value = false
+        }
+        return
     } else {
-        const target = roles.value.find(role => role.id === roleForm.id)
-        if (target) Object.assign(target, roleForm)
-        ElMessage.success('编辑角色成功')
+        submitting.value = true
+        try {
+            const res: any = await updateRoleApi({
+                objectId: roleForm.id,
+                roleCode: roleForm.key,
+                roleName: roleForm.name,
+                status: roleForm.status ? 1 : 0
+            })
+            if (res.code !== 200) {
+                throw new Error(res.message || '更新角色失败')
+            }
+
+            dialogVisible.value = false
+            await loadRoleList()
+            ElMessage.success(res.message || '更新角色成功')
+        } catch (error: any) {
+            const message = error?.response?.data?.message || error?.message || '更新角色失败'
+            ElMessage.error(message)
+        } finally {
+            submitting.value = false
+        }
+        return
     }
-    dialogVisible.value = false
 }
+
+const deletingRoleId = ref('')
 
 const deleteRole = async (row: Role) => {
     try {
         await ElMessageBox.confirm(`确定删除角色“${row.name}”吗？`, '提示', { type: 'warning' })
-        roles.value = roles.value.filter(role => role.id !== row.id)
-        ElMessage.success('删除成功')
     } catch {
-        // 用户取消删除时无需提示。
+        return
+    }
+
+    deletingRoleId.value = row.id
+    try {
+        const res: any = await deleteRoleApi(row.id)
+        if (res.code !== 200) {
+            throw new Error(res.message || '删除角色失败')
+        }
+
+        if (roles.value.length === 1 && currentPage.value > 1) {
+            currentPage.value -= 1
+        }
+        await loadRoleList()
+        ElMessage.success(res.message || '删除成功')
+    } catch (error: any) {
+        const message = error?.response?.data?.message || error?.message || '删除角色失败'
+        ElMessage.error(message)
+    } finally {
+        deletingRoleId.value = ''
     }
 }
 
@@ -224,7 +268,14 @@ onMounted(loadRoleList)
                 <el-table-column label="操作" width="170" align="center" fixed="right">
                     <template #default="{ row }">
                         <el-button type="primary" link @click="openEditDialog(row)">编辑</el-button>
-                        <el-button type="danger" link @click="deleteRole(row)">删除</el-button>
+                        <el-button
+                            type="danger"
+                            link
+                            :loading="deletingRoleId === row.id"
+                            @click="deleteRole(row)"
+                        >
+                            删除
+                        </el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -263,7 +314,7 @@ onMounted(loadRoleList)
             </el-form>
             <template #footer>
                 <el-button @click="dialogVisible = false">取消</el-button>
-                <el-button type="primary" @click="submitRole">确定</el-button>
+                <el-button type="primary" :loading="submitting" @click="submitRole">确定</el-button>
             </template>
         </el-dialog>
 
