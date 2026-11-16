@@ -11,6 +11,14 @@ const routes = [
         component:()=>import('../layout/Layout.vue'),
 
         children: [
+            {
+                path: 'chat',
+                name: 'Chat',
+                component: () => import('../views/Chat.vue'),
+                meta: {
+                    title: '聊天室'
+                }
+            }
         ]
     },
     {
