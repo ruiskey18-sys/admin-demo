@@ -35,7 +35,7 @@ router.beforeEach(async(to, from, next)=>{
             console.log('菜单接口返回：',res)
             menuStore.setMenu(res.data)
             
-            addDynamicRoutes(res.data)
+            addDynamicRoutes(menuStore.menuList)
             hasAddRoutes = true
             next({
                 ...to,
